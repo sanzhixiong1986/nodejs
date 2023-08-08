@@ -13,28 +13,10 @@ npm install ws
 npm install express
 
 ## 使用Express
-
-    ```javascript
-    var express = require("express");
-    var path = require("path");
-
-    if (process.argv.length < 3) {
-        console.log("node webserver.js port");
-        return;
-    }
-
-    var app = express();
-    var port = parseInt(process.argv[2]);
-
-    process.chdir("./apps/webserver");
-    console.log(process.cwd());
-
-    app.use(express.static(path.join(process.cwd(), "www_root")));
-
-    app.listen(port);
-
-    console.log("webserver started at port " + port);
-
-    ```
+```javascript
+$(document).ready(function () {
+    alert('RUNOOB');
+});
+```
 
 在apps内部创建一个webserver进行网页的相关的操作，现在是做了一个index.html 输出了一个helloworld，这个是为http作为操作
