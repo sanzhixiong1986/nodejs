@@ -33,3 +33,72 @@ function start_ws_server(ip, port, proto_type) {
 }
 
 ```
+
+## 用户进入和用户收到数据
+```javascript
+/**
+ * 添加ws的相关操作
+ * @param {*} session 
+ * @param {*} proto_type 
+ */
+function ws_add_client_session_event(session, proto_type) {
+    session.on("close", function () {
+        on_session_exit(session);
+    });
+
+    session.on("error", function (err) { });
+    
+    //链接到对应的数据
+    session.on("message", function (data) {
+        //是json的操作
+        if (session.proto_type == netbus.PROTO_JSON) {
+            //解析相关数据
+            on_session_recv_cmd(session, data);
+        }
+    })
+
+    on_session_enter(session, proto_type, true);
+}
+```
+
+## 用户进入以后加入到集合中的
+```javascript
+var global_session_list = {};   //存放进入游戏的相关用户
+var global_session_key = 1;
+/**
+ * 是否有用户进来
+ * @param {*} session 
+ * @param {*} proto_type 
+ * @param {*} is_ws 
+ */
+function on_session_enter(session, proto_type, is_ws) {
+    if (is_ws) {
+        //log.info("on_session_enter", session);
+    }
+    session.last_pkg = null;
+    session_is_ws = is_ws;
+    session.proto_type = proto_type;
+    //加入到列表中
+    global_session_list[global_session_key] = session;
+    session.session_key = global_session_key;
+    global_session_key++;
+}
+```
+
+## 用户退出的操作，在集合中删除已经存在的对象
+
+```javascript
+/**
+ * 退出
+ * @param {*} session 
+ */
+function on_session_exit(session) {
+    log.info("session_exit", session);
+    session.last_pkg = null;
+    if (global_session_list[session.session_key]) {
+        global_session_list[session.session_key] = null;
+        delete global_session_list[session.session_key];
+        session.session_key = null;
+    }
+}
+```
