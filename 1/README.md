@@ -14,7 +14,7 @@ npm install express
 
 ## 使用Express
 
-    ```js
+    ```JavaScript
     var express = require("express");
     var path = require("path");
 
