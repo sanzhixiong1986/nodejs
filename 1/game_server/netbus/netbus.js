@@ -3,6 +3,8 @@ var ws = require('ws');
 
 var log = require('../utils/log.js');
 
+var service_manager = require("./service_manager.js");
+
 var netbus = {
     PROTO_JSON: 1,
     PROTO_BUF: 2,
@@ -49,7 +51,7 @@ function ws_add_client_session_event(session, proto_type) {
     });
 
     session.on("error", function (err) { });
-    
+
     //链接到对应的数据
     session.on("message", function (data) {
         //是json的操作
@@ -90,6 +92,9 @@ function on_session_enter(session, proto_type, is_ws) {
  */
 function on_session_recv_cmd(session, str_or_buffer) {
     log.info("on_session_recv_cmd", str_or_buffer);
+    if (!service_manager.on_recv_client_cmd(session, str_or_buffer)) {
+        session_close(session);
+    }
 }
 
 /**
@@ -106,6 +111,7 @@ function isString(obj) {
  */
 function on_session_exit(session) {
     log.info("session_exit", session);
+    service_manager.on_client_lost_connect(session);
     session.last_pkg = null;
     if (global_session_list[session.session_key]) {
         global_session_list[session.session_key] = null;
