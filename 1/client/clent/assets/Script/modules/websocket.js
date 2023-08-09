@@ -1,3 +1,5 @@
+var proto_mgr = require('proto_mgr');
+
 var websocket = {
     sock: null,
     serives_handler: null,
@@ -10,7 +12,19 @@ var websocket = {
     },
 
     _on_recv_data: function (str_or_buf) {
-        
+        if (!this.serives_handler) {
+            return;
+        }
+
+        var cmd = proto_mgr.decode_cmd(this.proto_type, str_or_buf);
+        if (!cmd) {
+            return;
+        }
+
+        var stype = cmd[0];
+        if (this.serives_handler[stype]) {
+            this.serives_handler[stype](cmd[0], cmd[1], cmd[2]);
+        }
     },
 
     _on_socket_close: function (event) {
@@ -29,7 +43,6 @@ var websocket = {
         this.sock.onmessage = this._on_recv_data.bind(this);
         this.sock.onclose = this._on_socket_close.bind(this);
         this.sock.onerror = this._on_socket_err.bind(this);
-
         this.proto_type = proto_type;
     },
 
@@ -43,6 +56,8 @@ var websocket = {
         if (!this.sock || !this.is_connected) {
             return;
         }
+        var buf = proto_mgr.encode_cmd(this.proto_type, style, ctype, body);
+        this.sock.send(buf);
     },
 
 

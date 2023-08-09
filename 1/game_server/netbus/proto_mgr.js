@@ -9,7 +9,7 @@ var proto_mgr = {};
  * @param {*} str_or_buffer 
  */
 function decode_cmd(proto_type, str_or_buffer) {
-    log.warn("proto_mgr.decode_cmd", str_or_buffer)
+    // log.warn("proto_mgr.decode_cmd", str_or_buffer)
     return json_decode(decrypt(str_or_buffer));
 }
 
@@ -19,7 +19,7 @@ function decode_cmd(proto_type, str_or_buffer) {
  * @returns 
  */
 function json_decode(cmd_json) {
-    log.warn("json_decode", cmd_json);
+    // log.warn("json_decode", cmd_json);
     var cmd = null;
     try {
         cmd = JSON.parse(cmd_json);
