@@ -4,6 +4,8 @@ var ws = require('ws');
 var log = require('../utils/log.js');
 
 var service_manager = require("./service_manager.js");
+const proto_mgr = require('./proto_mgr.js');
+const { stype } = require('../test/talk_room.js');
 
 var netbus = {
     PROTO_JSON: 1,
@@ -79,10 +81,25 @@ function on_session_enter(session, proto_type, is_ws) {
     session.last_pkg = null;
     session_is_ws = is_ws;
     session.proto_type = proto_type;
+    session.is_connected = true;
+    //添加扩展的方法
+    session.send_encoded_cmd = session_send_encoded_cmd;//服务器发送给客户端的方法
+    session.send_cmd = session_send_cmd;
     //加入到列表中
     global_session_list[global_session_key] = session;
     session.session_key = global_session_key;
     global_session_key++;
+}
+
+/**
+ * 发送数据的方法
+ * @param {*} cmd 
+ */
+function session_send_encoded_cmd(cmd) {
+    if (!this.is_connected) {
+        return;
+    }
+    this.send(cmd);
 }
 
 /**
@@ -111,6 +128,7 @@ function isString(obj) {
  */
 function on_session_exit(session) {
     log.info("session_exit");
+    session.is_connected = false;//恢复状态
     service_manager.on_client_lost_connect(session);
     session.last_pkg = null;
     if (global_session_list[session.session_key]) {
@@ -138,6 +156,27 @@ function session_send(session, cmd) {
         return;
     }
     session.send(cmd);
+}
+
+/**
+ * 发送数据相关
+ * @param {*} stype 
+ * @param {*} ctype 
+ * @param {*} body 
+ */
+function session_send_cmd(stype, ctype, body) {
+    
+    if (!this.is_connected) {
+        return;
+    }
+    var cmd = null;
+    cmd = proto_mgr.encode_cmd(1, stype, ctype, body);
+    log.info("server send client", cmd);
+    if (!cmd) {
+        return;
+    }
+    
+    this.send_encoded_cmd(cmd);
 }
 
 netbus.start_ws_server = start_ws_server;

@@ -12,11 +12,13 @@ var websocket = {
     },
 
     _on_recv_data: function (str_or_buf) {
+
+        console.log("收到数据", str_or_buf);
         if (!this.serives_handler) {
             return;
         }
 
-        var cmd = proto_mgr.decode_cmd(this.proto_type, str_or_buf);
+        var cmd = proto_mgr.decode_cmd(this.proto_type, str_or_buf.data);
         if (!cmd) {
             return;
         }
@@ -60,7 +62,6 @@ var websocket = {
         this.sock.send(buf);
     },
 
-
     /**
      * 关闭操作
      */
@@ -70,6 +71,10 @@ var websocket = {
             this.sock.close();
             this.sock = null;
         }
+    },
+
+    register_serivces_handler: function (serivces_handler) {
+        this.serives_handler = serivces_handler;
     }
 }
 

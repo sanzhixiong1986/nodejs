@@ -47,10 +47,7 @@ function json_decode(cmd_json) {
  */
 function encode_cmd(proto_type, stype, ctype, body) {
     var buf = null;
-    if (proto_type == netbus.PROTO_JSON) {
-        buf = _json_encode(stype, ctype, body);
-    }
-
+    buf = _json_encode(stype, ctype, body);
     if (buf) {
         buf = encrypt_cmd(buf);//加密
     }
