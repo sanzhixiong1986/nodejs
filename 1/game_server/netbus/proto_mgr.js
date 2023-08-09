@@ -9,10 +9,8 @@ var proto_mgr = {};
  * @param {*} str_or_buffer 
  */
 function decode_cmd(proto_type, str_or_buffer) {
-    str_or_buffer = decrypt(str_or_buffer);//加密
-    if (proto_type == netbus.PROTO_JSON) {
-        return json_decode(str_or_buffer);
-    }
+    log.warn("proto_mgr.decode_cmd", str_or_buffer)
+    return json_decode(decrypt(str_or_buffer));
 }
 
 /**
@@ -21,14 +19,21 @@ function decode_cmd(proto_type, str_or_buffer) {
  * @returns 
  */
 function json_decode(cmd_json) {
-    var cmd = JSON.parse(cmd_json);
+    log.warn("json_decode", cmd_json);
+    var cmd = null;
+    try {
+        cmd = JSON.parse(cmd_json);
+    }
+    catch (e) {
+
+    }
     if (!cmd ||
         typeof (cmd[0]) == "undefined" ||
         typeof (cmd[1]) == "undefined" ||
         typeof (cmd[2]) == "undefined") {
         return null;
     }
-    log.info("json_decode", cmd);
+    log.warn("json_decode", cmd);
     return cmd;
 }
 

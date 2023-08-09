@@ -23,16 +23,15 @@ function register_service(stype, service) {
  * @param {*} str_or_buf 
  */
 function on_recv_client_cmd(session, str_or_buf) {
+    log.warn("service_manager.on_recv_client_cmd=", str_or_buf,session.proto_type);
     var cmd = proto_mgr.decode_cmd(session.proto_type, str_or_buf);
     if (!cmd) {
         return false;
     }
-
     var stype, ctype, body;
     stype = cmd[0];
     ctype = cmd[1];
     body = cmd[2];
-
     if (service_modules[stype]) {
         service_modules[stype].on_recv_player_cmd(session, ctype, body);
     }

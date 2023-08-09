@@ -91,7 +91,7 @@ function on_session_enter(session, proto_type, is_ws) {
  * @param {*} str_or_buffer 
  */
 function on_session_recv_cmd(session, str_or_buffer) {
-    log.info("on_session_recv_cmd", str_or_buffer);
+    log.info("on_session_recv_cmd");
     if (!service_manager.on_recv_client_cmd(session, str_or_buffer)) {
         session_close(session);
     }
@@ -110,7 +110,7 @@ function isString(obj) {
  * @param {*} session 
  */
 function on_session_exit(session) {
-    log.info("session_exit", session);
+    log.info("session_exit");
     service_manager.on_client_lost_connect(session);
     session.last_pkg = null;
     if (global_session_list[session.session_key]) {
@@ -125,11 +125,7 @@ function on_session_exit(session) {
  * @param {*} session 
  */
 function session_close(session) {
-    if (!session.is_ws) {
-        session.end();
-    } else {
-        session.close();
-    }
+    session.close();
 }
 
 /**

@@ -15,7 +15,7 @@ var service = {
 
     //每个服务器链接丢失后调用
     on_player_disconnect: function (session) {
-        log.info(this.name + "on_player_disconnect", session);
+        log.info(this.name + "on_player_disconnect",session.session_key);
     }
 }
 
