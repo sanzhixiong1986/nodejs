@@ -1,34 +1,75 @@
-/**
- * @Author: Nick
- * @Date: 2023/8/10 16:16:14
- * @LastEditors: Your Name
- * @LastEditTime: 2023/8/10 16:16:14
- * Description: 
- * Copyright: Copyright (©)}) 2023 Your Name. All rights reserved.
- * 中心数据的设计
- */
 var mysql = require("mysql");
-const log = require("../utils/log");
+var util = require('util')
+var Respones = require("../apps/Respones.js");
+
 var conn_pool = null;
-/**
- * 链接数据库
- * @param {*} host      ip
- * @param {*} port      端口
- * @param {*} db_name   数据库名字
- * @param {*} uname     用户名
- * @param {*} upwd      用户密码
- */
 function connect_to_center(host, port, db_name, uname, upwd) {
-    var conn_pool = mysql.createPool({
-        host: host,
-        port: port,
-        database: db_name,
-        user: uname,
-        password: upwd
-    });
-    log.info("mysql_center is startend");
+	var conn_pool = mysql.createPool({
+		host: host, // 数据库服务器的IP地址
+		port: port, // my.cnf指定了端口，默认的mysql的端口是3306,
+		database: db_name, // 要连接的数据库
+		user: uname,
+		password: upwd,
+	});
+}
+
+
+function mysql_exec(sql, callback) {
+	conn_pool.getConnection(function(err, conn) {
+		if (err) { // 如果有错误信息
+			if(callback) {
+				callback(err, null, null);
+			}
+			return;
+		}
+
+		conn.query(sql, function(sql_err, sql_result, fields_desic) {
+			conn.release(); // 忘记加了
+
+			if (sql_err) {
+				if (callback) {
+					callback(sql_err, null, null);
+				}
+				return;
+			}
+
+			if (callback) {
+				callback(null, sql_result, fields_desic);
+			}
+		});
+		// end 
+	});
+}
+
+
+function get_guest_uinfo_by_ukey(ukey, callback) {
+	var sql = "select uid, unick, usex, uface, uvip, status from uinfo status where guest_key = \"%s\"";
+	var sql_cmd = util.format(sql, ukey);
+
+	mysql_exec(sql_cmd, function(err, sql_ret, fields_desic) {
+		if (err) {
+			callback(Respones.SYSTEM_ERR, null);
+			return;
+		}
+		callback(Respones.OK, sql_ret);
+	});
+}
+
+function insert_guest_user(unick, uface, usex, ukey, callback) {
+	var sql = "insert into uinfo(`guest_key`, `unick`, `uface`, `usex`)values(\"%s\", \"%s\", %d, %d)";
+	var sql_cmd = util.format(sql, ukey, unick, uface, usex);
+
+	mysql_exec(sql_cmd, function(err, sql_ret, fields_desic) {
+		if (err) {
+			callback(Respones.SYSTEM_ERR);
+			return;
+		}
+		callback(Respones.OK);
+	});
 }
 
 module.exports = {
-    connect: connect_to_center
-}
+	connect: connect_to_center,
+	get_guest_uinfo_by_ukey: get_guest_uinfo_by_ukey, 
+	insert_guest_user: insert_guest_user,
+};
