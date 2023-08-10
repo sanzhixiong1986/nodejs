@@ -6,8 +6,8 @@
  * Description: 
  * Copyright: Copyright (©)}) 2023 Nick. All rights reserved.
  */
-const proto_mgr = require("../netbus/proto_mgr.js");
-var log = require("../utils/log.js");
+const proto_mgr = require("../../netbus/proto_mgr.js");
+var log = require("../../utils/log.js");
 
 var STYPE_TALKROOM = 1; //游戏的
 

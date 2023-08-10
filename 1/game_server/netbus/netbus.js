@@ -15,7 +15,7 @@ var service_manager = require("./service_manager.js");
 const proto_mgr = require('./proto_mgr.js');
 const {
     stype
-} = require('../test/talk_room.js');
+} = require('../apps/talkroom/talk_room.js');
 
 var netbus = {
     PROTO_JSON: 1,
@@ -177,7 +177,6 @@ function session_send(session, cmd) {
  * @param {*} body 
  */
 function session_send_cmd(stype, ctype, body) {
-
     if (!this.is_connected) {
         return;
     }
@@ -192,8 +191,6 @@ function session_send_cmd(stype, ctype, body) {
 }
 
 netbus.start_ws_server = start_ws_server;
-
 netbus.session_send = session_send;
 netbus.session_close = session_close;
-
 module.exports = netbus; //导出相关的操作
