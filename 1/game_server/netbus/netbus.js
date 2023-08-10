@@ -16,6 +16,9 @@ const proto_mgr = require('./proto_mgr.js');
 const {
     stype
 } = require('../apps/talkroom/talk_room.js');
+const {
+    is
+} = require('express/lib/request.js');
 
 var netbus = {
     PROTO_JSON: 1,
@@ -186,11 +189,82 @@ function session_send_cmd(stype, ctype, body) {
     if (!cmd) {
         return;
     }
-
     this.send_encoded_cmd(cmd);
 }
 
+var server_connect_list = {};
+
+function get_server_session(stype) {
+    return server_connect_list[stype];
+}
+
+/**
+ * 链接服务器的中简介
+ * @param {*} stype 
+ * @param {*} host 
+ * @param {*} port 
+ * @param {*} is_encrypt 
+ */
+function connect_tcp_server(stype, host, port, is_encrypt) {
+    var session = new ws("ws://" + host + ":" + port);
+    session.is_connected = false; //链接首先为false
+    session.on("open", function () {
+        on_session_connected(stype, session, false, is_encrypt);
+    });
+
+    //是否关闭
+    session.on("close", function () {
+        if (session.is_connected === true) {
+            on_session_disconnect(session);
+        }
+        session.close();
+        setTimeout(function () {
+            log.info("reconnect:", stype, host, port, is_encrypt);
+            connect_tcp_server(stype, host, port, is_encrypt);
+        }, 3000);
+    });
+}
+
+/**
+ * 链接相关操作
+ * @param {*} stype 
+ * @param {*} session 
+ * @param {*} is_ws 
+ * @param {*} is_encrypt 
+ */
+function on_session_connected(stype, session, is_ws, is_encrypt) {
+    session.last_pkg = null;
+    session.is_ws = is_ws;
+    session.is_connected = true;
+    session.is_encrypt = is_encrypt;
+
+    session.send_encoded_cmd = session_send_encoded_cmd;
+    session.send_cmd = session_send_cmd;
+
+    //加入到列表中
+    server_connect_list[stype] = session;
+    session.session_key = stype;
+}
+
+/**
+ * 退出的相关操作
+ */
+function on_session_disconnect(session) {
+    session.is_connected = false; //状态设置成falst
+    var stype = session.session_key;
+    session.last_pkg = null;
+    session.session_key = null;
+
+    if (server_connect_list[stype]) {
+        server_connect_list[stype] = null;
+        delete server_connect_list[stype];
+    }
+}
+
+
+netbus.get_server_session = get_server_session;
 netbus.start_ws_server = start_ws_server;
+netbus.connect_tcp_server = connect_tcp_server;
 netbus.session_send = session_send;
 netbus.session_close = session_close;
 module.exports = netbus; //导出相关的操作
