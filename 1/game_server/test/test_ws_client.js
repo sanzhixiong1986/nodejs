@@ -1,3 +1,11 @@
+/**
+ * @Author: Nick
+ * @Date: 2023/8/10 09:56:46
+ * @LastEditors: Your Name
+ * @LastEditTime: 2023/8/10 09:56:46
+ * Description: 
+ * Copyright: Copyright (©)}) 2023 Your Name. All rights reserved.
+ */
 var ws = require("ws");
 var proto_man = require("../netbus/proto_mgr.js");
 

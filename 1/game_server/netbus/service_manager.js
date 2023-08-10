@@ -1,3 +1,11 @@
+/**
+ * @Author: Nick
+ * @Date: 2023/8/10 09:56:16
+ * @LastEditors: Your Name
+ * @LastEditTime: 2023/8/10 09:56:16
+ * Description: 
+ * Copyright: Copyright (©)}) 2023 Your Name. All rights reserved.
+ */
 //游戏的模块
 var log = require("../utils/log.js");
 var proto_mgr = require("../netbus/proto_mgr.js");

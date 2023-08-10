@@ -1,3 +1,11 @@
+/**
+ * @Author: Nick
+ * @Date: 2023/8/10 09:55:27
+ * @LastEditors: Your Name
+ * @LastEditTime: 2023/8/10 09:55:27
+ * Description: 
+ * Copyright: Copyright (©)}) 2023 Your Name. All rights reserved.
+ */
 var net = require('net');
 var ws = require('ws');
 
