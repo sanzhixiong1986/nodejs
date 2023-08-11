@@ -19,10 +19,11 @@ sock.on("open", function () {
 	// 	'id': 1,
 	// 	'userName': "sanzhixiong"
 	// })
-	var cmd_buf = proto_man.encode_cmd(1, 2, 3, {
-		userName: "sanzhixiong",
-		password: "11111"
-	});
+	// var cmd_buf = proto_man.encode_cmd(1, 2, 3, {
+	// 	userName: "sanzhixiong",
+	// 	password: "11111"
+	// });
+	
 	sock.send(cmd_buf);
 });
 
