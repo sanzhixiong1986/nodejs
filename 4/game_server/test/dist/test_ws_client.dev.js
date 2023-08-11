@@ -20,16 +20,16 @@ var msgpack = require('msgpack5')(); // url ws://127.0.0.1:6080
 
 var sock = new ws("ws://127.0.0.1:6082");
 sock.on("open", function () {
-  console.log("connect success !!!");
-  var cmd_buf = proto_man.encode_cmd(1, 2, 1, 1); // var cmd_buf = proto_man.encode_cmd(1, 2, 2, {
+  console.log("connect success !!!"); // var cmd_buf = proto_man.encode_cmd(1, 2, 1, 1);
+  // var cmd_buf = proto_man.encode_cmd(1, 2, 2, {
   // 	'id': 1,
   // 	'userName': "sanzhixiong"
   // })
-  // var cmd_buf = proto_man.encode_cmd(1, 2, 3, {
-  // 	userName: "sanzhixiong",
-  // 	password: "11111"
-  // });
 
+  var cmd_buf = proto_man.encode_cmd(1, 2, 3, {
+    userName: "sanzhixiong",
+    password: "11111"
+  });
   sock.send(cmd_buf);
 });
 sock.on("error", function (err) {
