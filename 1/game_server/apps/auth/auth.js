@@ -9,8 +9,30 @@
  */
 const proto_mgr = require("../../netbus/proto_mgr.js");
 var log = require("../../utils/log.js");
+var utils = require("../../utils/utls.js");
+var Cmd = require("../../apps/Cmd.js");
+var Respones = require("../../apps/Respones.js");
+const auth_model = require("./auth_model.js");
 
 var STYPE_AUTH = 2; //游戏的
+
+
+/**
+ * 游戏登陆操作
+ * @param {*} session 
+ * @param {*} body 
+ */
+function guest_login(session, body) {
+    if (!body) {
+        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
+        return;
+    }
+
+    var ukey = body;
+    auth_model.guest_login(ukey, function (ret) {
+        session.send_cmd(STYPE_AUTH,Cmd.Auth.GUEST_LOGIN, ret);
+    });
+}
 
 
 var service = {
@@ -23,7 +45,12 @@ var service = {
 
     //每个服务器收到数据调用
     on_recv_player_cmd: function (session, ctype, body) {
-
+        log.warn(this.name + " on_recv_player_cmd");
+        switch (ctype) {
+            case Cmd.Auth.GUEST_LOGIN:
+                guest_login(session, body);
+                break
+        }
     },
 
     //每个服务器链接丢失后调用
