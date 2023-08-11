@@ -10,7 +10,8 @@
 var Cmd = {
     USER_DISCONNECT: 10000,
     Auth: {
-        GUEST_LOGIN: 1 //游戏登陆
+        GUEST_LOGIN: 1, //游戏登陆
+        GUEST_EDIT: 2, //用户修改
     }
 }
 

@@ -46,6 +46,28 @@ function guest_login(session, ukey, ret_func) {
 	// end 
 }
 
+/**
+ * 修改相关的数据
+ * @param {*} session 
+ * @param {*} id 
+ * @param {*} userName 
+ * @param {*} ret_func 
+ */
+function guest_edit_userInfo_by_id(session, body, ret_func) {
+	log.warn("修改用户信息", body.id);
+	mysql_center.update_edit_user(body.id, body.userName, function (status, data) {
+		if (status != Respones.OK) {
+			session.send_cmd(2, 1, Respones.INVALID_PARAMS);
+			return;
+		}
+
+		session.send_cmd(2, 2, {
+			data: data
+		});
+	});
+}
+
 module.exports = {
 	guest_login: guest_login,
+	guest_edit_userInfo_by_id: guest_edit_userInfo_by_id
 };

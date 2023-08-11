@@ -14,7 +14,11 @@ var proto_man = require("../netbus/proto_mgr.js");
 var sock = new ws("ws://127.0.0.1:6082");
 sock.on("open", function () {
 	console.log("connect success !!!");
-	var cmd_buf = proto_man.encode_cmd(1, 2, 1, 1);
+	// var cmd_buf = proto_man.encode_cmd(1, 2, 1, 1);
+	var cmd_buf = proto_man.encode_cmd(1, 2, 2, {
+		'id': 1,
+		'userName': "sanzhixiong"
+	})
 	sock.send(cmd_buf);
 });
 
@@ -27,5 +31,5 @@ sock.on("close", function () {
 });
 
 sock.on("message", function (data) {
-	console.log(proto_man.decode_cmd(1, data)[2].data[0].userName);
+	console.log(data);
 });

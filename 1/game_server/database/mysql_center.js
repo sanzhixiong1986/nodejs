@@ -4,6 +4,7 @@ var Respones = require("../apps/Respones.js");
 const log = require("../utils/log.js");
 
 var conn_pool = null;
+
 function connect_to_center(host, port, db_name, uname, upwd) {
 	conn_pool = mysql.createPool({
 		host: host, // 数据库服务器的IP地址
@@ -16,15 +17,15 @@ function connect_to_center(host, port, db_name, uname, upwd) {
 
 
 function mysql_exec(sql, callback) {
-	conn_pool.getConnection(function(err, conn) {
+	conn_pool.getConnection(function (err, conn) {
 		if (err) { // 如果有错误信息
-			if(callback) {
+			if (callback) {
 				callback(err, null, null);
 			}
 			return;
 		}
 
-		conn.query(sql, function(sql_err, sql_result, fields_desic) {
+		conn.query(sql, function (sql_err, sql_result, fields_desic) {
 			conn.release(); // 忘记加了
 
 			if (sql_err) {
@@ -69,8 +70,28 @@ function insert_guest_user(unick, uface, usex, ukey, callback) {
 	});
 }
 
+/**
+ * 修改相关的操作
+ * @param {*} id 
+ * @param {*} userName 
+ * @param {*} callback 
+ */
+function update_edit_user(id, userName, callback) {
+	log.error("update_edit_user");
+	let sql = "UPDATE t_user SET userName = \"%s\" WHERE id = \"%s\"";
+	let sql_cmd = util.format(sql, userName, id);
+	mysql_exec(sql_cmd, function (err, sql_ret, fields_desic) {
+		if (err) {
+			callback(Respones.SYSTEM_ERR);
+			return;
+		}
+		callback(Respones.OK);
+	});
+}
+
 module.exports = {
 	connect: connect_to_center,
 	get_guest_uinfo_by_ukey: get_guest_uinfo_by_ukey,
 	insert_guest_user: insert_guest_user,
+	update_edit_user:update_edit_user,
 };
