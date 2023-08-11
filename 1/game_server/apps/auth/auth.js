@@ -34,6 +34,25 @@ function guest_login(session, body) {
     });
 }
 
+/**
+ * 用户信息修改
+ * @param {*} session 
+ * @param {*} body 
+ */
+function guest_edit(session, body) {
+    if (!body) { 
+        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
+        return;
+    }
+
+
+    let jsonObj = JSON.stringify(body);
+    log.info("guest_edit = body", JSON.parse(jsonObj).id);
+    auth_model.guest_edit_userInfo_by_id(session, JSON.parse(jsonObj), function (rret) {
+        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_EDIT, 1);
+    })
+}
+
 
 var service = {
     stype: STYPE_AUTH,
@@ -50,6 +69,9 @@ var service = {
             case Cmd.Auth.GUEST_LOGIN:
                 guest_login(session, body);
                 break
+            case Cmd.Auth.GUEST_EDIT:
+                guest_edit(session, body);
+                break;
         }
     },
 
