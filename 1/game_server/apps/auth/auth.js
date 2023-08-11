@@ -40,17 +40,48 @@ function guest_login(session, body) {
  * @param {*} body 
  */
 function guest_edit(session, body) {
-    if (!body) { 
+    if (!body) {
         session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
         return;
     }
 
-
     let jsonObj = JSON.stringify(body);
-    log.info("guest_edit = body", JSON.parse(jsonObj).id);
+    if (!jsonObj) {
+        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
+        return;
+    }
     auth_model.guest_edit_userInfo_by_id(session, JSON.parse(jsonObj), function (rret) {
         session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_EDIT, 1);
     })
+}
+
+
+/**
+ * 用户账号密码登陆
+ * @param {*} session 
+ * @param {*} body 
+ */
+function login_user(session, body) {
+    if (!body) {
+        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
+        return;
+    }
+
+    let jsonObj = JSON.stringify(body);
+    let json = JSON.parse(jsonObj);
+
+    if (!json) {
+        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
+        return;
+    }
+
+    auth_model.login_user_center(session, json, function (ret) {
+        if (ret === 1) {
+            session.send_cmd(STYPE_AUTH, Cmd.Auth.LOGIN, 1);
+        } else {
+            session.send_cmd(STYPE_AUTH, Cmd.Auth.LOGIN, -1000);
+        }
+    });
 }
 
 
@@ -71,6 +102,9 @@ var service = {
                 break
             case Cmd.Auth.GUEST_EDIT:
                 guest_edit(session, body);
+                break;
+            case Cmd.Auth.LOGIN:
+                login_user(session, body);
                 break;
         }
     },

@@ -12,6 +12,7 @@ var Cmd = {
     Auth: {
         GUEST_LOGIN: 1, //游戏登陆
         GUEST_EDIT: 2, //用户修改
+        LOGIN: 3, // 登陆模块
     }
 }
 

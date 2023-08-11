@@ -61,13 +61,43 @@ function guest_edit_userInfo_by_id(session, body, ret_func) {
 			return;
 		}
 
-		session.send_cmd(2, 2, {
-			data: data
-		});
+		session.send_cmd(2, 2, 1);
 	});
+}
+
+/**
+ * 用户账号的登陆
+ * @param {*} session 
+ * @param {*} json 
+ * @param {*} ret_func 
+ */
+function login_user_center(session, json, ret_func) {
+	log.warn("进入用户账号密码登陆模块")
+	//拿出对应的数据出来
+	let userName = json.userName;
+	let password = json.password;
+
+	if (!userName) {
+		session.send_cmd(2, 3, -100);
+		return;
+	}
+
+	if (!password) {
+		session.send_cmd(2, 3, -101);
+		return;
+	}
+
+	mysql_center.login_user(userName, password, function (status, data) {
+		if (status.length == 0) {
+			session.send_cmd(2, 1, Respones.INVALID_PARAMS);
+			return;
+		}
+		session.send_cmd(2, 3, 1);
+	})
 }
 
 module.exports = {
 	guest_login: guest_login,
-	guest_edit_userInfo_by_id: guest_edit_userInfo_by_id
+	guest_edit_userInfo_by_id: guest_edit_userInfo_by_id,
+	login_user_center: login_user_center
 };

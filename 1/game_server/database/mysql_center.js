@@ -2,6 +2,9 @@ var mysql = require("mysql");
 var util = require('util')
 var Respones = require("../apps/Respones.js");
 const log = require("../utils/log.js");
+const {
+	format
+} = require("express/lib/response.js");
 
 var conn_pool = null;
 
@@ -77,7 +80,7 @@ function insert_guest_user(unick, uface, usex, ukey, callback) {
  * @param {*} callback 
  */
 function update_edit_user(id, userName, callback) {
-	log.error("update_edit_user");
+	log.warn("update_edit_user");
 	let sql = "UPDATE t_user SET userName = \"%s\" WHERE id = \"%s\"";
 	let sql_cmd = util.format(sql, userName, id);
 	mysql_exec(sql_cmd, function (err, sql_ret, fields_desic) {
@@ -89,9 +92,31 @@ function update_edit_user(id, userName, callback) {
 	});
 }
 
+/**
+ * 用户的登陆
+ * @param {*} userName 
+ * @param {*} password 
+ * @param {*} callback 
+ */
+function login_user(userName, password, callback) {
+	log.warn("进入登陆模块");
+
+	let sql = "select * from t_user where userName = \"%s\" AND password = \"%s\"";
+	sql_cmd = util.format(sql, userName, password);
+
+	mysql_exec(sql_cmd, function (err, sql_ret, fields_desic) {
+		if (err) {
+			callback(Respones.SYSTEM_ERR);
+			return;
+		}
+		callback(sql_ret);
+	});
+}
+
 module.exports = {
 	connect: connect_to_center,
 	get_guest_uinfo_by_ukey: get_guest_uinfo_by_ukey,
 	insert_guest_user: insert_guest_user,
-	update_edit_user:update_edit_user,
+	update_edit_user: update_edit_user,
+	login_user: login_user,
 };
