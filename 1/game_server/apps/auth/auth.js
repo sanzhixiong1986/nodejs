@@ -23,10 +23,7 @@ var STYPE_AUTH = 2; //游戏的
  * @param {*} body 
  */
 function guest_login(session, body) {
-    if (!body) {
-        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
-        return;
-    }
+    checkBody(body);
 
     var ukey = body;
     auth_model.guest_login(session, ukey, function (ret) {
@@ -40,10 +37,7 @@ function guest_login(session, body) {
  * @param {*} body 
  */
 function guest_edit(session, body) {
-    if (!body) {
-        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
-        return;
-    }
+    checkBody(body);
 
     let jsonObj = JSON.stringify(body);
     if (!jsonObj) {
@@ -62,10 +56,7 @@ function guest_edit(session, body) {
  * @param {*} body 
  */
 function login_user(session, body) {
-    if (!body) {
-        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
-        return;
-    }
+    checkBody(body);
 
     let jsonObj = JSON.stringify(body);
     let json = JSON.parse(jsonObj);
@@ -84,6 +75,23 @@ function login_user(session, body) {
     });
 }
 
+
+/**
+ * 用户查找密码，并且修改密码
+ * @param {*} session 
+ * @param {*} body 
+ */
+function find_password(session, body) {
+    checkBody(body);
+}
+
+
+function checkBody(body) {
+    if (!body) {
+        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, Respones.INVALID_PARAMS);
+        return;
+    }
+}
 
 var service = {
     stype: STYPE_AUTH,
@@ -105,6 +113,9 @@ var service = {
                 break;
             case Cmd.Auth.LOGIN:
                 login_user(session, body);
+                break;
+            case Cmd.Auth.FIND_PASSWORD:
+                find_password(session, body);
                 break;
         }
     },
