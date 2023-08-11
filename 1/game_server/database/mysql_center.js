@@ -1,10 +1,11 @@
 var mysql = require("mysql");
 var util = require('util')
 var Respones = require("../apps/Respones.js");
+const log = require("../utils/log.js");
 
 var conn_pool = null;
 function connect_to_center(host, port, db_name, uname, upwd) {
-	var conn_pool = mysql.createPool({
+	conn_pool = mysql.createPool({
 		host: host, // 数据库服务器的IP地址
 		port: port, // my.cnf指定了端口，默认的mysql的端口是3306,
 		database: db_name, // 要连接的数据库
@@ -43,10 +44,10 @@ function mysql_exec(sql, callback) {
 
 
 function get_guest_uinfo_by_ukey(ukey, callback) {
-	var sql = "select uid, unick, usex, uface, uvip, status from uinfo status where guest_key = \"%s\"";
+	var sql = "select * from t_user where id = \"%s\"";
 	var sql_cmd = util.format(sql, ukey);
-
-	mysql_exec(sql_cmd, function(err, sql_ret, fields_desic) {
+	log.warn("sql_cmd", sql_cmd);
+	mysql_exec(sql_cmd, function (err, sql_ret, fields_desic) {
 		if (err) {
 			callback(Respones.SYSTEM_ERR, null);
 			return;
@@ -59,7 +60,7 @@ function insert_guest_user(unick, uface, usex, ukey, callback) {
 	var sql = "insert into uinfo(`guest_key`, `unick`, `uface`, `usex`)values(\"%s\", \"%s\", %d, %d)";
 	var sql_cmd = util.format(sql, ukey, unick, uface, usex);
 
-	mysql_exec(sql_cmd, function(err, sql_ret, fields_desic) {
+	mysql_exec(sql_cmd, function (err, sql_ret, fields_desic) {
 		if (err) {
 			callback(Respones.SYSTEM_ERR);
 			return;
@@ -70,6 +71,6 @@ function insert_guest_user(unick, uface, usex, ukey, callback) {
 
 module.exports = {
 	connect: connect_to_center,
-	get_guest_uinfo_by_ukey: get_guest_uinfo_by_ukey, 
+	get_guest_uinfo_by_ukey: get_guest_uinfo_by_ukey,
 	insert_guest_user: insert_guest_user,
 };

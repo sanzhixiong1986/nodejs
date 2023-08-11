@@ -29,8 +29,8 @@ function guest_login(session, body) {
     }
 
     var ukey = body;
-    auth_model.guest_login(ukey, function (ret) {
-        session.send_cmd(STYPE_AUTH,Cmd.Auth.GUEST_LOGIN, ret);
+    auth_model.guest_login(session, ukey, function (ret) {
+        session.send_cmd(STYPE_AUTH, Cmd.Auth.GUEST_LOGIN, ret);
     });
 }
 
