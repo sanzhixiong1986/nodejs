@@ -10,14 +10,18 @@
  */
 var ws = require("ws");
 
-var proto_man = require("../netbus/proto_mgr.js"); // url ws://127.0.0.1:6080
+var proto_man = require("../netbus/proto_mgr.js");
+
+var proto_mgr = require("../netbus/proto_mgr.js");
+
+var msgpack = require('msgpack5')(); // url ws://127.0.0.1:6080
 // 创建了一个客户端的socket,然后让这个客户端去连接服务器的socket
 
 
 var sock = new ws("ws://127.0.0.1:6082");
 sock.on("open", function () {
-  console.log("connect success !!!"); // var cmd_buf = proto_man.encode_cmd(1, 2, 1, 1);
-  // var cmd_buf = proto_man.encode_cmd(1, 2, 2, {
+  console.log("connect success !!!");
+  var cmd_buf = proto_man.encode_cmd(1, 2, 1, 1); // var cmd_buf = proto_man.encode_cmd(1, 2, 2, {
   // 	'id': 1,
   // 	'userName': "sanzhixiong"
   // })
@@ -35,5 +39,5 @@ sock.on("close", function () {
   console.log("close");
 });
 sock.on("message", function (data) {
-  console.log(data);
+  console.log(proto_man.decode_cmd(1, data)[2]);
 });
