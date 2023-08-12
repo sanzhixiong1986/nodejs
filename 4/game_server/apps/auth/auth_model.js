@@ -96,8 +96,42 @@ function login_user_center(session, json, ret_func) {
 	})
 }
 
+/**
+ * 查找用户是否存在
+ * @param {*} session 
+ * @param {*} data 
+ * @param {*} ret_func 
+ */
+function find_password_model(session, data, ret_func) {
+	let user = data.userName;
+	let pasd = data.password;
+	mysql_center.select_user_func(user, function (status, data) {
+		if (status.length == 0) {
+			ret_func(-1)
+			return;
+		}
+		ret_func(1);
+	});
+}
+
+/**
+ * 查找密码是否存在
+ * @param {*} session 
+ * @param {*} pasd 
+ * @param {*} ret_func 
+ */
+function find_password_pasd(session, data, ret_func) {
+	let user = data.userName;
+	let pasd = data.password;
+	mysql_center.select_user_or_pasd(user, pasd, function (status, data) {
+		ret_func(status);
+	});
+}
+
 module.exports = {
 	guest_login: guest_login,
 	guest_edit_userInfo_by_id: guest_edit_userInfo_by_id,
-	login_user_center: login_user_center
+	login_user_center: login_user_center,
+	find_password_model: find_password_model,
+	find_password_pasd: find_password_pasd,
 };

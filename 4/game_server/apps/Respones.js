@@ -4,7 +4,7 @@ var Respones = {
 	SYSTEM_ERR: -101, // 系统错误
 	ILLEGAL_ACCOUNT: -102, // 非法的账号
 	Auth: {
-
+		USER_NOT_EXIST: -103, //用户不存在
 	},
 };
 

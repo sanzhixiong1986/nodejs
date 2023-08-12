@@ -113,10 +113,43 @@ function login_user(userName, password, callback) {
 	});
 }
 
+/**
+ * 根据用户的账号查询
+ * @param {*} userName 
+ * @param {*} callback 
+ */
+function select_user_func(userName, callback) {
+	log.info("mysql:select_user_func");
+	let sql = "select * from t_user where = userName = \"%s\"";
+	let sql_cmd = util.format(sql, userName);
+	mysql_exec(sql_cmd, function (err, sql_ret, fields_desic) {
+		if (err) {
+			callback(Respones.SYSTEM_ERR);
+			return;
+		}
+		callback(sql_ret);
+	});
+}
+
+function select_user_or_pasd(userName, password, callback) {
+	let sql = "select * from t_user where userName = \"%s\" AND password = \"%s\"";
+	sql_cmd = util.format(sql, userName, password);
+
+	mysql_exec(sql_cmd, function (err, sql_ret, fields_desic) {
+		if (err) {
+			callback(Respones.SYSTEM_ERR);
+			return;
+		}
+		callback(1);
+	});
+}
+
 module.exports = {
 	connect: connect_to_center,
 	get_guest_uinfo_by_ukey: get_guest_uinfo_by_ukey,
 	insert_guest_user: insert_guest_user,
 	update_edit_user: update_edit_user,
 	login_user: login_user,
+	select_user_func: select_user_func,
+	select_user_or_pasd: select_user_or_pasd
 };

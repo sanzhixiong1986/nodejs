@@ -14,6 +14,8 @@ var Cmd = require("../../apps/Cmd.js");
 var Respones = require("../../apps/Respones.js");
 const auth_model = require("./auth_model.js");
 
+var msgpack = require('msgpack5')();
+
 var STYPE_AUTH = 2; //游戏的
 
 
@@ -83,6 +85,19 @@ function login_user(session, body) {
  */
 function find_password(session, body) {
     checkBody(body);
+    log.info("find_password", JSON.parse(JSON.stringify(body)).userName);
+    let jsonObj = JSON.parse(JSON.stringify(body));
+    auth_model.find_password_model(session, jsonObj.userName, function (ret) {
+        if (ret <= 0) {
+            session.send_cmd(2, 4, Respones.Auth.USER_NOT_EXIST);
+            return;
+        }
+        auth_model.find_password_pasd(session, jsonObj, function (ret) {
+            if (ret == 1) {
+                session.send_cmd(2, 4, Respones.OK);
+            }
+        });
+    })
 }
 
 
