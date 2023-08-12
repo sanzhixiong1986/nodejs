@@ -27,6 +27,21 @@ var game_config = {
             host: "127.0.0.1",
             port: 6086,
         }
+    },
+
+    center_database: {
+        host: "127.0.0.1",
+        port: 3306,
+        db_name: "user",
+        uname: "root",
+        upad: "sanzhixiong",
+    },
+
+    //redis相关配置
+    center_redis: {
+        host: "127.0.0.1",
+        port: 6379,
+        db_index: 0
     }
 }
 

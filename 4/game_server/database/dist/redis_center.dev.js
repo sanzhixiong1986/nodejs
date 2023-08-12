@@ -17,8 +17,6 @@ var Respones = require('../apps/Respones.js');
 
 var log = require('../utils/log.js');
 
-var utils = require('../utils/utils.js');
-
 var center_redis = null;
 /**
  * 链接redis方法
@@ -33,6 +31,7 @@ function connect_to_center(host, port, db_index) {
     port: port,
     db: db_index
   });
+  log.info("redis connected starting");
 }
 /**
  * 把数据存入到redis里面
