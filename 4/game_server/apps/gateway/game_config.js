@@ -42,7 +42,13 @@ var game_config = {
         host: "localhost",
         port: 6379,
         db_index: 0
-    }
+    },
+
+    game_system_server: {
+        host: "127.0.0.1",
+        port: 6087,
+        stypes: [Stype.GameSystem],
+    },
 }
 
 module.exports = game_config;

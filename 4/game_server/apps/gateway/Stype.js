@@ -11,6 +11,7 @@
 var Stype = {
     TalkRoom: 1, //聊天服务器
     Auth: 2, //用户信息服务器
+    GameSystem:3,//系统服务器
 }
 
 module.exports = Stype;
