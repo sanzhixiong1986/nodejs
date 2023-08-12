@@ -47,10 +47,7 @@ function set_uinfo_inredis(uid, uinfo) {
 
   var key = "redis_center_user_uid_" + uid;
   log.info("set_uinfo_inredis:key", key);
-  uinfo.uface = uinfo.uface.toString();
-  uinfo.usex = uinfo.usex.toString();
-  uinfo.uvip = uinfo.uvip.toString();
-  uinfo.is_guest = uinfo.is_guest.toString();
+  uinfo.userName = uinfo.userName.toString();
   center_redis.hmset(key, uinfo, function (err) {
     if (err) {
       log.error(err);
@@ -68,10 +65,7 @@ function get_uinfo_inredis(uid, callback) {
   log.info("get_uinfo_inredis:key", key);
   center_redis.hgetall(key, function (err, data) {
     var uinfo = data;
-    uinfo.uface = parseInt(uinfo.uface);
-    uinfo.usex = parseInt(uinfo.usex);
-    uinfo.uvip = parseInt(uinfo.uvip);
-    uinfo.is_guest = parseInt(uinfo.is_guest);
+    uinfo.userName = uinfo.userName;
     callback(Respones.OK, uinfo);
   });
 }
