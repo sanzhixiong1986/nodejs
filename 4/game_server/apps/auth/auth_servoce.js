@@ -11,7 +11,7 @@ var netbus = require('../../netbus/netbus.js');
 var service_manager = require('../../netbus/service_manager.js');
 var auth = require('./auth.js');
 
-netbus.start_ws_server("127.0.0.1", 6082, netbus.PROTO_JSON);
+netbus.start_ws_server("127.0.0.1", 6086, netbus.PROTO_JSON);
 
 service_manager.register_service(2, auth);
 

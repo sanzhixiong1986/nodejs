@@ -14,6 +14,9 @@ var Cmd = {
         GUEST_EDIT: 2, //用户修改
         LOGIN: 3, // 登陆模块
         FIND_PASSWORD: 4, //找密码
+    },
+    GameSystem: {
+        GET_GAME_INFO: 1//游戏信息
     }
 }
 

@@ -47,7 +47,7 @@ var game_config = {
     game_system_server: {
         host: "127.0.0.1",
         port: 6087,
-        stypes: [Stype.GameSystem],
+        stypes: Stype.GameSystem,
     },
 }
 
