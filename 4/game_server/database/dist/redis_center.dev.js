@@ -1,71 +1,74 @@
 "use strict";
 
-/**
- * @Author: Nick
- * @Date: 2023/8/12 11:41:42
- * @LastEditors: Your Name
- * @LastEditTime: 2023/8/12 11:41:42
- * Description: 
- * Copyright: Copyright (©)}) 2023 Your Name. All rights reserved.
- * 中心服务器的redis的服务器
- */
-var redis = require('redis');
+var redis = require("redis");
 
 var util = require('util');
 
-var Respones = require('../apps/Respones.js');
+var Respones = require("../apps/Respones.js");
 
-var log = require('../utils/log.js');
+var log = require("../utils/log.js");
 
 var center_redis = null;
-/**
- * 链接redis方法
- * @param {*} host 
- * @param {*} port 
- * @param {*} db_index 
- */
 
-function connect_to_center(host, port, db_index) {
+function connect_to_center(host, port) {
   center_redis = redis.createClient({
     host: host,
-    port: port,
-    db: db_index
+    port: port
   });
-  log.info("redis connected starting");
+  center_redis.on('error', function (err) {
+    log.error(err);
+  });
+  center_redis.on('connect', function () {
+    log.info("Connected to start server");
+  });
 }
-/**
- * 把数据存入到redis里面
- * @param {*} uid 
- * @param {*} uinfo 
- */
+/* key, --> value
+bycw_center_user_uid_8791
+uinfo : {
+	unick: string,
+	uface: 图像ID，
+	usex: 性别,
+	uvip: VIP等级
+	is_guest: 是否为游客
+}
+*/
 
 
 function set_uinfo_inredis(uid, uinfo) {
-  if (!center_redis) {
+  if (center_redis === null) {
     return;
   }
 
-  var key = "redis_center_user_uid_" + uid;
-  log.info("set_uinfo_inredis:key", key);
-  uinfo.userName = uinfo.userName.toString();
+  var key = "bycw_center_user_uid_" + uid;
+  uinfo.userName = uinfo.userName;
+  log.info("redis center hmset " + key);
   center_redis.hmset(key, uinfo, function (err) {
     if (err) {
       log.error(err);
     }
   });
-}
+} // callback(status, body)
+
 
 function get_uinfo_inredis(uid, callback) {
-  if (!center_redis) {
+  if (center_redis === null) {
     callback(Respones.SYSTEM_ERR, null);
     return;
   }
 
-  var key = "redis_center_user_uid_" + uid;
-  log.info("get_uinfo_inredis:key", key);
+  var key = "bycw_center_user_uid_" + uid;
+  log.info("hgetall ", key);
   center_redis.hgetall(key, function (err, data) {
+    if (err) {
+      callback(Respones.SYSTEM_ERR, null);
+      return;
+    }
+
     var uinfo = data;
-    uinfo.userName = uinfo.userName;
+    uinfo.uface = parseInt(uinfo.uface);
+    uinfo.usex = parseInt(uinfo.usex);
+    uinfo.uvip = parseInt(uinfo.uvip);
+    uinfo.is_guest = parseInt(uinfo.is_guest);
     callback(Respones.OK, uinfo);
   });
 }

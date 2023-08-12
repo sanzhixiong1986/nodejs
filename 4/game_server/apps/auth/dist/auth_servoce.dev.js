@@ -28,4 +28,4 @@ var center_redis_config = game_config.center_redis;
 
 var redis_center = require("../../database/redis_center.js");
 
-redis_center.connect(center_redis_config.host, center_redis_config.port, center_redis_config.db_index); //end
+redis_center.connect(center_redis_config.host, center_redis_config.port); //end

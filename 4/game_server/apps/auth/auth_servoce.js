@@ -24,5 +24,5 @@ mysql_center.connect("127.0.0.1", 3306, "user", "root", "sanzhixiong");
 //redis相关操作
 var center_redis_config = game_config.center_redis;
 var redis_center = require("../../database/redis_center.js");
-redis_center.connect(center_redis_config.host, center_redis_config.port, center_redis_config.db_index);
+redis_center.connect(center_redis_config.host, center_redis_config.port);
 //end

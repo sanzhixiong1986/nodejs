@@ -37,7 +37,7 @@ var game_config = {
   },
   //redis相关配置
   center_redis: {
-    host: "127.0.0.1",
+    host: "localhost",
     port: 6379,
     db_index: 0
   }

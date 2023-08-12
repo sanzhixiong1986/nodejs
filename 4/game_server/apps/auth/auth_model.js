@@ -11,6 +11,7 @@ var Respones = require("../Respones.js");
 var mysql_center = require("../../database/mysql_center.js");
 var log = require("../../utils/log.js");
 var utils = require("../../utils/utls.js");
+var redis_center = require("../../database/redis_center.js");
 
 function guest_login_success(data, ret_func) {
 	var ret = {};
@@ -125,6 +126,10 @@ function find_password_pasd(session, data, ret_func) {
 	let pasd = data.password;
 	mysql_center.select_user_or_pasd(user, pasd, function (status, data) {
 		ret_func(status);
+	});
+
+	redis_center.set_uinfo_inredis(1, {
+		userName: "sanzhixiong"
 	});
 }
 
