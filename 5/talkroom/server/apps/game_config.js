@@ -62,7 +62,13 @@ var game_config = {
 			clear_login_straight: false,//是否需要清理
 			bonues: [100, 200, 300, 400, 500]
 		}
-	}
+	},
+
+	center_server: {
+		host: "127.0.0.1",
+		port: 6086,
+		stypes: [Stype.Auth],
+	},
 };
 
 module.exports = game_config;
