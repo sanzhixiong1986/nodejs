@@ -13,9 +13,9 @@ const game_config = require("./game_config");
 var gw_service = require("./gw_service.js");
 
 var host = game_config.gateway_config.host;
-var ports = game_config.gateway_config.ports;
+var prots = game_config.gateway_config.prots;
 
-netbus.start_ws_server(host, ports[1], true);
+netbus.start_ws_server(host, prots[0], 1, true);
 
 var game_server = game_config.game_server;
 

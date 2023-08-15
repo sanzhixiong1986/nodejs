@@ -66,7 +66,7 @@ function ws_add_client_session_event(session, proto_type, is_ebcrtpt) {
         on_session_exit(session);
     });
 
-    session.on("error", function (err) {});
+    session.on("error", function (err) { });
 
     //链接到对应的数据
     session.on("message", function (data) {
@@ -222,6 +222,18 @@ function connect_tcp_server(stype, host, port, is_encrypt) {
             log.info("reconnect:", stype, host, port, is_encrypt);
             connect_tcp_server(stype, host, port, is_encrypt);
         }, 3000);
+    });
+
+    session.on("error", function (err) {
+        console.log("error: ", err);
+    });
+
+    session.on("close", function () {
+        console.log("close");
+    });
+
+    session.on("message", function (data) {
+        log.info("链接成功", data);
     });
 }
 
