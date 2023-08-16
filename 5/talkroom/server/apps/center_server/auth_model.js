@@ -13,7 +13,7 @@ var mysql_center = require("../../database/mysql_center.js");
 var redis_center = require("../../database/redis_center.js");
 var utils = require("../../utils/utils.js");
 var log = require("../../utils/log.js");
-var phone_msg = require("../phone_msg.js");
+// var phone_msg = require("../phone_msg.js");
 
 module.exports = {
 
