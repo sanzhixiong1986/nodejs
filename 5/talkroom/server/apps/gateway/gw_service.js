@@ -8,10 +8,11 @@ var service = {
 	is_transfer: true, // 是否为转发模块,
 
 	// 收到客户端给我们发来的数据
-	on_recv_player_cmd: function(session, stype, ctype, body, utag, proto_type, raw_cmd) {
+	on_recv_player_cmd: function (session, stype, ctype, body, utag, proto_type, raw_cmd) {
 		log.info(raw_cmd);
 		var server_session = netbus.get_server_session(stype);
 		if (!server_session) {
+			log.error("server_session is not available");
 			return;
 		}
 
@@ -33,10 +34,10 @@ var service = {
 
 		proto_tools.clear_utag_inbuf(raw_cmd);
 		client_session.send_encoded_cmd(raw_cmd);
-	}, 
+	},
 
 	// 收到客户端断开连接;
-	on_player_disconnect: function(stype, session) {
+	on_player_disconnect: function (stype, session) {
 		var server_session = netbus.get_server_session(stype);
 		if (!server_session) {
 			return;
