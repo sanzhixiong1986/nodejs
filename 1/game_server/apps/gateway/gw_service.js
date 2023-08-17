@@ -15,9 +15,20 @@ var service = {
     name: "gw_service",
     is_transfer: true, //是否为转发模块
 
-    //收到客户端给我们的数据
-    on_recv_player_cmd: function (session, stype, ctype, body, utag, proto_type, raw_cmd) {
+    init: function () {
+        log.info(this.name + "service initialized");
+    },
 
+    //收到客户端给我们的数据
+    on_recv_player_cmd: function (session, ctype, body) {
+        log.info("gateway:on_recv_player_cmd", ctype, body, session.session_key);
+        let sessions = netbus.get_server_session(session.session_key);
+        if (!sessions) {
+            log.info("sessions=null", sessions);
+            return;
+        }
+        log.info(sessions);
+        sessions.send_cmd(session.session_key, ctype, body);
     },
 
     //收到我们链接服务器对应的相关方法

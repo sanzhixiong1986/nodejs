@@ -19,6 +19,7 @@ const {
 const {
     is
 } = require('express/lib/request.js');
+const WebSocket = require('ws');
 
 var netbus = {
     PROTO_JSON: 1,
@@ -66,7 +67,7 @@ function ws_add_client_session_event(session, proto_type, is_ebcrtpt) {
         on_session_exit(session);
     });
 
-    session.on("error", function (err) {});
+    session.on("error", function (err) { });
 
     //链接到对应的数据
     session.on("message", function (data) {
@@ -195,6 +196,7 @@ function session_send_cmd(stype, ctype, body) {
 var server_connect_list = {};
 
 function get_server_session(stype) {
+    log.warn("get_server_session", stype, get_server_session[stype]);
     return server_connect_list[stype];
 }
 
@@ -206,23 +208,35 @@ function get_server_session(stype) {
  * @param {*} is_encrypt 
  */
 function connect_tcp_server(stype, host, port, is_encrypt) {
-    var session = new ws("ws://" + host + ":" + port);
-    session.is_connected = false; //链接首先为false
-    session.on("open", function () {
-        on_session_connected(stype, session, false, is_encrypt);
-    });
+    let url = "ws://" + host + ":" + port;
+    var session = new WebSocket(url);
 
-    //是否关闭
-    session.on("close", function () {
+    session.is_connected = false;
+
+    session.onopen = function (){
+        session.is_connected = true;
+        on_session_connected(stype, session, proto_type, false, is_encrypt);
+    }
+
+    session.onmessage = function(){
         if (session.is_connected === true) {
             on_session_disconnect(session);
         }
-        session.close();
+    };
+
+
+    session.onclose = function(){
+        // 重新连接到服务器
         setTimeout(function () {
-            log.info("reconnect:", stype, host, port, is_encrypt);
+            log.warn("reconnect: ", stype, host, port, is_encrypt);
             connect_tcp_server(stype, host, port, is_encrypt);
         }, 3000);
-    });
+    };
+
+
+    session.onerror = function (err){
+        log.error("connect_tcp_server=", err);
+    };
 }
 
 /**
@@ -244,6 +258,7 @@ function on_session_connected(stype, session, is_ws, is_encrypt) {
     //加入到列表中
     server_connect_list[stype] = session;
     session.session_key = stype;
+    //log.info("加入到列表中")
 }
 
 /**
